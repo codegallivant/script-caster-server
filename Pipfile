@@ -1,0 +1,18 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+gspread = "*"
+oauth2client = "*"
+cryptography = "*"
+python-decouple = "*"
+django-crispy-forms = "*"
+pygithub = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"
