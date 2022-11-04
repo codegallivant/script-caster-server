@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from user import views as user_view
+from scmanager import views as scmanager_views
 from django.contrib.auth import views as auth
 
 
@@ -23,7 +24,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', user_view.index, name ='index'),
     path('login/', user_view.login_user, name ='login'),
-    path('logout/', user_view.logout),
+    path('logout/', user_view.logout, name = 'logout'),
     path('control_panel/', include('scmanager.urls')),  
     path('server/', include('server.urls')),
+    path('favicon/', scmanager_views.get_favicon)
 ]

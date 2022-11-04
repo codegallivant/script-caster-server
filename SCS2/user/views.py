@@ -40,8 +40,19 @@ ht2="""
 
       <form action="/login/" method="POST">
         <input type="hidden" name="csrfmiddlewaretoken" value="{}">
-        <input type="text" name="username">
-        <input type="password" name="password">     
+        <div class="input-group mb-3" style="margin: 10px;">
+          <div class="input-group-prepend" style="border-radius: 6px 0px 0px 6px;">
+            <span class="input-group-text" id="basic-addon1" style="border-radius: 6px 0px 0px 6px;">@</span>
+          </div>
+          <input type="text" name="username"  placeholder="Username" class="form-control" aria-label="Username" aria-describedby="basic-addon1" style="border-radius: 0px 6px 6px 0px;">
+        </div>
+        <div class="input-group mb-3" style="margin: 10px;">
+          <div class="input-group-prepend" style="border-radius: 6px 0px 0px 6px;">
+            <span class="input-group-text" id="basic-addon1" style="border-radius: 6px 0px 0px 6px;">*</span>
+          </div>
+          <input type="password" name="password" placeholder="Password" class="form-control" aria-label="Password" aria-describedby="basic-addon2" style="border-radius: 0px 6px 6px 0px;"> 
+        </div>
+    
         <button class="btn btn-primary" type="submit" style="margin:20px"><span class="glyphicon glyphicon-log-in"></span> &nbsp; Login</button>
       </form>
 
@@ -58,7 +69,7 @@ def index(request):
     csrf_token = get_token(request)
     if request.session:
         if "username" in request.session.keys():
-            return HttpResponseRedirect('http://localhost:8000/control_panel')
+            return HttpResponseRedirect('/control_panel')
     return HttpResponse((ht1+ht2).format(csrf_token))
   
 
@@ -73,7 +84,7 @@ def login_user(request):
         if user is not None:
             form = login(request, user)
             request.session["username"]=username
-            return HttpResponseRedirect('http://localhost:8000/control_panel')
+            return HttpResponseRedirect('/control_panel')
         else:
             hts = """
 <script>
@@ -85,4 +96,4 @@ alert("Incorrect username/password.")
 
 def logout(request):
     del request.session["username"]
-    return HttpResponseRedirect("http://localhost:8000")
+    return HttpResponseRedirect("/")

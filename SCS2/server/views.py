@@ -1,14 +1,8 @@
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
-import gspread
 import os
 import exterior_connection
 from datetime import datetime
 import time
-import requests
-import string
-import random
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 import json
@@ -35,21 +29,23 @@ def get_token(request): # 1 API Call
 @require_http_methods(["POST"])
 @csrf_exempt 
 def auth_client(request): # 2 API Calls
-    current_timestamp = str(datetime.now().strftime("%d/%m/%Y %H:%M:%S.%f"))
-    values = settings.AUTH_HISTORY_SHEET.get_all_values()
-    f = Fernet(settings.AUTH_ID_KEY)
-    for row in values:
-        if row[1]==request.POST["CLIENT_CODE"] and row[2]=="Pending":
-            return JsonResponse({})
-    row_count = len(values)
-    last_id = values[-1][0]
-    if last_id == "AUTH_ID":
-        last_id = 0
-    else:
-        last_id = int(last_id)
-    this_id = last_id+1
-    settings.AUTH_HISTORY_SHEET.update(f'A{row_count+1}:D{row_count+1}', [[this_id, request.POST["CLIENT_CODE"], "Pending", current_timestamp ]])
-    return JsonResponse({"AUTH_ID": f.encrypt(str(this_id).encode()).decode()})
+  if request.POST["CLIENT_CODE"] not in settings.CLIENT_CODE_LIST:
+    return JsonResponse({})
+  current_timestamp = str(datetime.now().strftime("%d/%m/%Y %H:%M:%S.%f"))
+  values = settings.AUTH_HISTORY_SHEET.get_all_values()
+  f = Fernet(settings.AUTH_ID_KEY)
+  for row in values:
+      if row[1]==request.POST["CLIENT_CODE"] and row[2]=="Pending":
+          return JsonResponse({})
+  row_count = len(values)
+  last_id = values[-1][0]
+  if last_id == "AUTH_ID":
+      last_id = 0
+  else:
+      last_id = int(last_id)
+  this_id = last_id+1
+  settings.AUTH_HISTORY_SHEET.update(f'A{row_count+1}:D{row_count+1}', [[this_id, request.POST["CLIENT_CODE"], "Pending", current_timestamp ]])
+  return JsonResponse({"AUTH_ID": f.encrypt(str(this_id).encode()).decode()})
 
 
     # client = exterior_connection.authenticate(creds_path)
